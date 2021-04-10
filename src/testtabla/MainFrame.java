@@ -41,6 +41,7 @@ public class MainFrame extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuEventos = new javax.swing.JMenu();
         menuBebidas = new javax.swing.JMenu();
@@ -75,7 +76,12 @@ public class MainFrame extends javax.swing.JFrame {
 
         labelNombreEvento.setText("[Nombre de evento]");
 
-        jButton1.setText("Agregar Evento");
+        jButton1.setText("Elegir Evento");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Personas:");
 
@@ -89,11 +95,13 @@ public class MainFrame extends javax.swing.JFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jButton3.setText("+");
+        jButton3.setText("Agregar");
 
         jLabel2.setText("Barra");
 
         jLabel5.setText("Bebida");
+
+        jButton2.setText("Limpiar");
 
         menuEventos.setText("Eventos");
         menuEventos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -151,21 +159,23 @@ public class MainFrame extends javax.swing.JFrame {
                                         .addGap(195, 195, 195)
                                         .addComponent(jLabel4))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(303, 303, 303)
-                                        .addComponent(botonGenerar))
-                                    .addGroup(layout.createSequentialGroup()
                                         .addGap(197, 197, 197)
                                         .addComponent(Barra, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(32, 32, 32)
-                                        .addComponent(jButton3))))
+                                        .addComponent(jButton3))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(303, 303, 303)
+                                        .addComponent(botonGenerar)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 271, Short.MAX_VALUE)
+                                        .addComponent(jButton2))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(283, 283, 283)
                                 .addComponent(jLabel2)
                                 .addGap(128, 128, 128)
                                 .addComponent(jLabel5)))
-                        .addGap(0, 207, Short.MAX_VALUE))
+                        .addGap(10, 10, 10))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
@@ -195,7 +205,9 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(botonGenerar))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(botonGenerar)
+                    .addComponent(jButton2)))
         );
 
         pack();
@@ -218,6 +230,11 @@ public class MainFrame extends javax.swing.JFrame {
         System.out.println("Botón Opciones");
         new OpcionesFrame().setVisible(true);
     }//GEN-LAST:event_menuOpcionesMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        new InputEventoDialog(this, true).setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -260,6 +277,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox Barra;
     private javax.swing.JButton botonGenerar;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
