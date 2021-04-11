@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package testtabla;
+import java.sql.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -45,11 +47,12 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         menuEventos = new javax.swing.JMenu();
         menuBebidas = new javax.swing.JMenu();
-        menuOpciones = new javax.swing.JMenu();
         menuHistorial = new javax.swing.JMenu();
+        menuOpciones = new javax.swing.JMenu();
         menuAyuda = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Ventana Principal");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -119,6 +122,9 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jMenuBar1.add(menuBebidas);
 
+        menuHistorial.setText("Historial");
+        jMenuBar1.add(menuHistorial);
+
         menuOpciones.setText("Opciones");
         menuOpciones.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -126,9 +132,6 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         jMenuBar1.add(menuOpciones);
-
-        menuHistorial.setText("Historial");
-        jMenuBar1.add(menuHistorial);
 
         menuAyuda.setText("Ayuda");
         jMenuBar1.add(menuAyuda);
@@ -149,6 +152,13 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(labelNombreEvento))
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(231, 231, 231)
+                                .addComponent(Barra, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32)
+                                .addComponent(jButton3))
+                            .addGroup(layout.createSequentialGroup()
                                 .addGap(34, 34, 34)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton1)
@@ -157,27 +167,23 @@ public class MainFrame extends javax.swing.JFrame {
                                         .addGap(18, 18, 18)
                                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(195, 195, 195)
-                                        .addComponent(jLabel4))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(197, 197, 197)
-                                        .addComponent(Barra, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(32, 32, 32)
-                                        .addComponent(jButton3))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(303, 303, 303)
-                                        .addComponent(botonGenerar)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 271, Short.MAX_VALUE)
-                                        .addComponent(jButton2))))
+                                        .addComponent(jLabel4))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(283, 283, 283)
                                 .addComponent(jLabel2)
                                 .addGap(128, 128, 128)
                                 .addComponent(jLabel5)))
-                        .addGap(10, 10, 10))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+                        .addGap(0, 161, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(botonGenerar)
+                                .addGap(271, 271, 271)
+                                .addComponent(jButton2))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addGap(16, 16, 16))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,10 +208,10 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(Barra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(botonGenerar)
                     .addComponent(jButton2)))
         );
@@ -262,6 +268,32 @@ public class MainFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        Connection conn = ConexionBD.getInstance().getConnection();
+
+        if(conn == null){   
+            JOptionPane.showMessageDialog(null, "Error al intentar conectarse con la base de datos. \n\nFavor de contactarse con el técnico del programa.", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }else{
+            //Método para poder iniciar la ventana login
+
+            //Todas las excepciones generadas fueron por parte del NetBeans
+            try {
+                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                    if ("Nimbus".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
+                }
+            } catch (ClassNotFoundException ex) {
+                java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+                java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        }
         
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
