@@ -5,19 +5,47 @@
  */
 package testtabla;
 import java.sql.*;
+//import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+//import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+
 
 /**
  *
  * @author Ghost
  */
 public class MainFrame extends javax.swing.JFrame {
+    Connection conn = ConexionBD.getInstance().getConnection();
+    
+    public void loadComboBoxBarras(){
+        try{
+			String qBuscarProductos = "SELECT * FROM barras";
+
+			PreparedStatement execQuery = conn.prepareStatement(qBuscarProductos);
+			ResultSet resQuery = execQuery.executeQuery();
+
+			DefaultComboBoxModel listaBarras = new DefaultComboBoxModel();
+
+			while(resQuery.next()){
+				String producto = resQuery.getString("nombre");
+
+				//Agregar elemento
+				listaBarras.addElement(producto);
+			}
+
+			cboxBarra.setModel(listaBarras);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, e);
+		}
+    }
 
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
+        loadComboBoxBarras();
     }
 
     /**
@@ -38,7 +66,7 @@ public class MainFrame extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         botonGenerar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        Barra = new javax.swing.JComboBox();
+        cboxBarra = new javax.swing.JComboBox();
         jComboBox1 = new javax.swing.JComboBox();
         jButton3 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -94,7 +122,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Agregar");
 
-        Barra.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboxBarra.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -153,7 +181,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addComponent(labelNombreEvento))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(231, 231, 231)
-                                .addComponent(Barra, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cboxBarra, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(32, 32, 32)
@@ -205,7 +233,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Barra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboxBarra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -306,8 +334,8 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox Barra;
     private javax.swing.JButton botonGenerar;
+    private javax.swing.JComboBox cboxBarra;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
