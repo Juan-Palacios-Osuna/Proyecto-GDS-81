@@ -39,6 +39,28 @@ public class MainFrame extends javax.swing.JFrame {
 			JOptionPane.showMessageDialog(null, e);
 		}
     }
+    
+    public void loadComboBoxBebidas(){
+        try{
+			String qBuscarProductos = "SELECT * FROM bebidas";
+
+			PreparedStatement execQuery = conn.prepareStatement(qBuscarProductos);
+			ResultSet resQuery = execQuery.executeQuery();
+
+			DefaultComboBoxModel listaBebidas = new DefaultComboBoxModel();
+
+			while(resQuery.next()){
+				String producto = resQuery.getString("nombre");
+
+				//Agregar elemento
+				listaBebidas.addElement(producto);
+			}
+
+			cboxBebidas.setModel(listaBebidas);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, e);
+		}
+    }
 
     /**
      * Creates new form MainFrame
@@ -46,6 +68,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         loadComboBoxBarras();
+        loadComboBoxBebidas();
     }
 
     /**
@@ -67,7 +90,7 @@ public class MainFrame extends javax.swing.JFrame {
         botonGenerar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         cboxBarra = new javax.swing.JComboBox();
-        jComboBox1 = new javax.swing.JComboBox();
+        cboxBebidas = new javax.swing.JComboBox();
         jButton3 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -124,7 +147,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         cboxBarra.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboxBebidas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton3.setText("Agregar");
 
@@ -183,7 +206,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addGap(231, 231, 231)
                                 .addComponent(cboxBarra, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cboxBebidas, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(32, 32, 32)
                                 .addComponent(jButton3))
                             .addGroup(layout.createSequentialGroup()
@@ -234,7 +257,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cboxBarra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboxBebidas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -336,10 +359,10 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonGenerar;
     private javax.swing.JComboBox cboxBarra;
+    private javax.swing.JComboBox cboxBebidas;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
