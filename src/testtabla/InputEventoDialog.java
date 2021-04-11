@@ -1,5 +1,10 @@
 package testtabla;
 
+import testtabla.Models.EventoModel;
+import java.sql.*;
+import javax.swing.DefaultListModel;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,6 +15,9 @@ package testtabla;
  * @author Ghost
  */
 public class InputEventoDialog extends javax.swing.JDialog {
+    
+    EventoModel eventoModel = new EventoModel();
+    Connection conn = ConexionBD.getInstance().getConnection();
 
     /**
      * Creates new form InputEventoDialog
@@ -17,6 +25,44 @@ public class InputEventoDialog extends javax.swing.JDialog {
     public InputEventoDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        loadEventos();
+    }
+    
+    private void loadEventos(){
+        try {
+            String queryCompra = "SELECT * FROM eventos";
+
+			PreparedStatement execQuery = conn.prepareStatement(queryCompra);
+			
+			ResultSet resultQuery = execQuery.executeQuery();
+
+			DefaultTableModel tablaTotal = (DefaultTableModel) this.tblEventos.getModel();
+
+			//Hacer que la tabla se de cuenta de la ultima posición
+            tablaTotal.setRowCount(tablaTotal.getRowCount());
+
+			while(resultQuery.next()){
+				//Obtener precio total
+				int id = resultQuery.getInt("id_evento");
+                                String nombre = resultQuery.getString("nombre");
+                                
+
+				//Campos a rellenar
+				Object resultado[] = {
+					id,
+                                        nombre
+				};
+
+				//Poner información en la tabla 
+				tablaTotal.addRow(resultado);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String getNombre(){
+        return eventoModel.getNombre();
     }
 
     /**
@@ -33,7 +79,7 @@ public class InputEventoDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblEventos = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
@@ -45,18 +91,33 @@ public class InputEventoDialog extends javax.swing.JDialog {
 
         jButton1.setText("Buscar");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblEventos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Id", "Nombre"
             }
-        ));
-        jScrollPane2.setViewportView(jTable1);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tblEventos);
+        if (tblEventos.getColumnModel().getColumnCount() > 0) {
+            tblEventos.getColumnModel().getColumn(0).setMaxWidth(20);
+        }
 
         jButton2.setText("Aceptar");
 
@@ -153,7 +214,7 @@ public class InputEventoDialog extends javax.swing.JDialog {
                         System.exit(0);
                     }
                 });
-                dialog.setVisible(true);
+                //dialog.setVisible(true);
             }
         });
     }
@@ -165,7 +226,7 @@ public class InputEventoDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTable tblEventos;
     // End of variables declaration//GEN-END:variables
 }
