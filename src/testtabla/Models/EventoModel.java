@@ -12,10 +12,19 @@ package testtabla.Models;
 public class EventoModel {
     int id;
     String nombre;
+    Boolean disponible;
+
     
-    public void EventoModel(){
+    public EventoModel(){
         id = 0;
         nombre = "";
+        disponible = true;
+    }
+    
+    public EventoModel(int nid, String nnombre, Boolean ndis){
+        this.id = nid;
+        this.nombre = nnombre;
+        this.disponible = ndis;
     }
     
     public void setId(int id){
@@ -26,11 +35,19 @@ public class EventoModel {
         this.nombre = nombre;
     }
     
+    public void setDisponible(Boolean disponible){
+        this.disponible = disponible;
+    }
+    
     public int getId(){
         return this.id;
     }
     
     public String getNombre(){
         return this.nombre;
+    }
+    
+    public Boolean getDisponible(){
+        return this.disponible;
     }
 }
