@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class InputEventoDialog extends javax.swing.JDialog {
     
-    EventoModel eventoModel = new EventoModel();
+    private EventoModel eventoModel = new EventoModel();
     Connection conn = ConexionBD.getInstance().getConnection();
 
     /**
@@ -30,9 +30,9 @@ public class InputEventoDialog extends javax.swing.JDialog {
     
     private void loadEventos(){
         try {
-            String queryCompra = "SELECT * FROM eventos";
+            String query = "SELECT * FROM eventos";
 
-			PreparedStatement execQuery = conn.prepareStatement(queryCompra);
+			PreparedStatement execQuery = conn.prepareStatement(query);
 			
 			ResultSet resultQuery = execQuery.executeQuery();
 
@@ -63,6 +63,14 @@ public class InputEventoDialog extends javax.swing.JDialog {
     
     public String getNombre(){
         return eventoModel.getNombre();
+    }
+    
+    public int getId(){
+        return eventoModel.getId();
+    }
+    
+    public EventoModel getModel(){
+        return eventoModel;
     }
 
     /**

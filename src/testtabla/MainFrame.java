@@ -9,6 +9,7 @@ import java.sql.*;
 import javax.swing.DefaultComboBoxModel;
 //import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import testtabla.Models.EventoModel;
 
 
 /**
@@ -17,8 +18,9 @@ import javax.swing.JOptionPane;
  */
 public class MainFrame extends javax.swing.JFrame {
     Connection conn = ConexionBD.getInstance().getConnection();
+    EventoModel evento = new EventoModel();
     
-    public void loadComboBoxBarras(){
+    public void cargarComboBoxBarras(){
         try{
 			String qBuscarProductos = "SELECT * FROM barras";
 
@@ -40,7 +42,7 @@ public class MainFrame extends javax.swing.JFrame {
 		}
     }
     
-    public void loadComboBoxBebidas(){
+    public void cargarComboBoxBebidas(){
         try{
 			String qBuscarProductos = "SELECT * FROM bebidas";
 
@@ -67,8 +69,8 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
-        loadComboBoxBarras();
-        loadComboBoxBebidas();
+        cargarComboBoxBarras();
+        cargarComboBoxBebidas();
     }
 
     /**
@@ -288,12 +290,14 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        InputEventoDialog evento = new InputEventoDialog(this, true);
-        evento.setVisible(true);
+        InputEventoDialog dialog = new InputEventoDialog(this, true);
+        dialog.setVisible(true);
+        
+        evento = dialog.getModel();
+        
         String nombre = evento.getNombre();
         labelNombreEvento.setText(nombre);
-        evento.dispose();
-        //new InputEventoDialog(this, true).setVisible(true);
+        dialog.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
