@@ -292,6 +292,7 @@ public class MainFrame extends javax.swing.JFrame {
         evento.setVisible(true);
         String nombre = evento.getNombre();
         labelNombreEvento.setText(nombre);
+        evento.dispose();
         //new InputEventoDialog(this, true).setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
