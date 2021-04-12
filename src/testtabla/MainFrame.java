@@ -145,6 +145,11 @@ public class MainFrame extends javax.swing.JFrame {
         jTextField1.setText("0");
 
         botonGenerar.setText("Generar Pronóstico");
+        botonGenerar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonGenerarActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Agregar");
 
@@ -300,6 +305,10 @@ public class MainFrame extends javax.swing.JFrame {
         labelNombreEvento.setText(nombre);
         dialog.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void botonGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGenerarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_botonGenerarActionPerformed
 
     /**
      * @param args the command line arguments

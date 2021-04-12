@@ -5,6 +5,17 @@
  */
 package testtabla;
 
+import javax.swing.JOptionPane;
+import testtabla.EventosDialogs.AgregarEventoDialog;
+import testtabla.EventosDialogs.ModificarEventoDialog;
+import testtabla.Models.EventoModel;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Ghost
@@ -14,10 +25,64 @@ public class BebidasFrame extends javax.swing.JFrame {
     /**
      * Creates new form BebidasFrame
      */
+    Connection conn = ConexionBD.getInstance().getConnection();
     public BebidasFrame() {
         initComponents();
     }
+    public void cargarEventos(){
+        
+        try {
+            String query = "SELECT * FROM eventos";
 
+			PreparedStatement execQuery = conn.prepareStatement(query);
+			
+			ResultSet resultQuery = execQuery.executeQuery();
+
+			DefaultTableModel tablaTotal = (DefaultTableModel) tblBebidas.getModel();
+
+			//Hacer que la tabla se de cuenta de la ultima posición
+            //tablaTotal.setRowCount(tablaTotal.getRowCount());
+                        tablaTotal.setRowCount(0);
+
+			while(resultQuery.next()){
+				//Obtener precio total
+				int id = resultQuery.getInt("id_evento");
+                                String nombre = resultQuery.getString("nombre");
+                                
+                                boolean disponible = resultQuery.getBoolean("registro_disponible");
+                                
+
+				//Campos a rellenar
+				Object resultado[] = {
+					id,
+                                        nombre,
+                                        disponible
+				};
+
+				//Poner información en la tabla 
+				tablaTotal.addRow(resultado);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void eliminarBebida(int id){
+		
+		//Modificar el producto
+		try {
+			String query = "DELETE FROM eventos WHERE id_evento = ?";
+
+			PreparedStatement execQuery = conn.prepareStatement(query);
+			execQuery.setInt(1, id);
+
+			execQuery.executeUpdate();
+
+			//Mostrar mensaje
+			JOptionPane.showMessageDialog(null, "Evento eliminado.");
+		} catch (SQLException errorMod) {
+			JOptionPane.showMessageDialog(null, "Error al eliminar. \n" + errorMod, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -31,8 +96,11 @@ public class BebidasFrame extends javax.swing.JFrame {
         botonActualizar = new javax.swing.JButton();
         botonAgregar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblBebidas = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Bebidas");
@@ -43,7 +111,7 @@ public class BebidasFrame extends javax.swing.JFrame {
 
         botonAgregar.setText("Agregar Nuevo");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblBebidas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -54,9 +122,30 @@ public class BebidasFrame extends javax.swing.JFrame {
                 "Id", "Nombre", "Disponible", "Modificar", "Eliminar"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblBebidas);
 
         jLabel2.setText("Filtro:");
+
+        jButton1.setText("Agregar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Modificar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Eliminar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -76,6 +165,14 @@ public class BebidasFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(62, 62, 62)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -86,12 +183,76 @@ public class BebidasFrame extends javax.swing.JFrame {
                     .addComponent(botonActualizar)
                     .addComponent(botonAgregar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        AgregarEventoDialog dialog = new AgregarEventoDialog(this, true);
+        dialog.setVisible(true);
+        dialog.dispose();
+        cargarEventos();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        int row = tblBebidas.getSelectedRow();
+        
+        int id = Integer.parseInt(tblBebidas.getValueAt(row, 0).toString());
+        String nombre = tblBebidas.getValueAt(row, 1).toString();
+        Boolean disponible = Boolean.parseBoolean(tblBebidas.getValueAt(row, 2).toString());
+        
+        EventoModel evento = new EventoModel(id, nombre, disponible);
+        
+        ModificarEventoDialog dialog = new ModificarEventoDialog(this, true, evento);
+        
+        dialog.setVisible(true);
+        
+        if(dialog.getCambio()){
+            cargarEventos();
+        }
+        
+        dialog.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        int row = tblBebidas.getSelectedRow();
+        int col = 1;
+        
+        String nombre = tblBebidas.getValueAt(row, col).toString();
+        
+        JOptionPane dialog = new JOptionPane(
+            "¿Desea elminar el evento " + nombre + "?",
+            JOptionPane.QUESTION_MESSAGE,
+            JOptionPane.YES_NO_OPTION);
+        
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Desea elminar el evento " + nombre + "?", "Aviso", JOptionPane.YES_NO_OPTION);
+        
+        //opcion.setVisible(true);
+        
+        //String valueStr = opcion.getValue().toString();
+        //int value = Integer.parseInt(valueStr);
+        
+        if(opcion == JOptionPane.YES_OPTION){
+            Object id_object = tblBebidas.getValueAt(row, 0);
+            int id = Integer.parseInt(id_object.toString());
+            
+            eliminarBebida(id);
+            cargarEventos();
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -100,9 +261,12 @@ public class BebidasFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonActualizar;
     private javax.swing.JButton botonAgregar;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblBebidas;
     // End of variables declaration//GEN-END:variables
 }
