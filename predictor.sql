@@ -24,7 +24,8 @@ CREATE TABLE `barras` (
   `id_barra` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(64) NOT NULL,
   `registro_disponible` tinyint(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id_barra`)
+  PRIMARY KEY (`id_barra`),
+  UNIQUE KEY `nombre` (`nombre`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `barras` */
@@ -43,7 +44,8 @@ CREATE TABLE `bebidas` (
   `nombre` varchar(64) NOT NULL,
   `denominacion` enum('mililitros','mediolitros','litros','doslitros','treslitros') NOT NULL,
   `registro_disponible` tinyint(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id_bebida`)
+  PRIMARY KEY (`id_bebida`),
+  UNIQUE KEY `nombre` (`nombre`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `bebidas` */
@@ -101,15 +103,20 @@ CREATE TABLE `eventos` (
   `id_evento` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(64) NOT NULL,
   `registro_disponible` tinyint(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id_evento`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (`id_evento`),
+  UNIQUE KEY `nombre` (`nombre`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `eventos` */
 
 insert  into `eventos`(`id_evento`,`nombre`,`registro_disponible`) values 
 (1,'Boda',1),
 (2,'Bautizo',1),
-(3,'Buffet',1);
+(3,'Buffet',1),
+(4,'Cumpleaños',1),
+(5,'UPSIN',1),
+(6,'Prueba de evento',1),
+(7,'Prueba 2',1);
 
 /*Table structure for table `historial_consumo` */
 
@@ -149,6 +156,25 @@ CREATE TABLE `movimientos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `movimientos` */
+
+/* Procedure structure for procedure `agregar_evento` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `agregar_evento` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`::1` PROCEDURE `agregar_evento`(
+	IN nnombre VARCHAR(64)
+    )
+BEGIN
+		IF NOT EXISTS (SELECT id_evento FROM eventos WHERE nombre=nnombre) THEN
+			INSERT INTO `predictor`.`eventos` (nombre)
+			VALUES (nnombre);
+		ELSE
+			SELECT "Evento ya está registrado." AS ERROR;
+		END IF;
+	END */$$
+DELIMITER ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
