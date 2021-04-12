@@ -5,7 +5,7 @@
  */
 package testtabla;
 
-import EventosDialogs.AgregarEventoDialog;
+import testtabla.EventosDialogs.AgregarEventoDialog;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -83,8 +83,8 @@ public class EventosFrame extends javax.swing.JFrame {
         btnAgregar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblEventos = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Eventos");
@@ -117,9 +117,14 @@ public class EventosFrame extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblEventos);
 
-        jButton3.setText("Modificar");
+        btnModificar.setText("Modificar");
 
-        jButton4.setText("Eliminar");
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -140,9 +145,9 @@ public class EventosFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -159,8 +164,8 @@ public class EventosFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(btnModificar)
+                    .addComponent(btnEliminar))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
@@ -180,6 +185,51 @@ public class EventosFrame extends javax.swing.JFrame {
         cargarEventos();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        int row = tblEventos.getSelectedRow();
+        int col = 1;
+        
+        String nombre = tblEventos.getValueAt(row, col).toString();
+        
+        JOptionPane dialog = new JOptionPane(
+            "¿Desea elminar el evento " + nombre + "?",
+            JOptionPane.QUESTION_MESSAGE,
+            JOptionPane.YES_NO_OPTION);
+        
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Desea elminar el evento " + nombre + "?", "Aviso", JOptionPane.YES_NO_OPTION);
+        
+        //opcion.setVisible(true);
+        
+        //String valueStr = opcion.getValue().toString();
+        //int value = Integer.parseInt(valueStr);
+        
+        if(opcion == JOptionPane.YES_OPTION){
+            Object id_object = tblEventos.getValueAt(row, 0);
+            int id = Integer.parseInt(id_object.toString());
+            
+            eliminarEvento(id);
+            cargarEventos();
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void eliminarEvento(int id){
+		
+		//Modificar el producto
+		try {
+			String query = "DELETE FROM eventos WHERE id_evento = ?";
+
+			PreparedStatement execQuery = conn.prepareStatement(query);
+			execQuery.setInt(1, id);
+
+			execQuery.executeUpdate();
+
+			//Mostrar mensaje
+			JOptionPane.showMessageDialog(null, "Evento eliminado.");
+		} catch (SQLException errorMod) {
+			JOptionPane.showMessageDialog(null, "Error al eliminar. \n" + errorMod, "Error", JOptionPane.ERROR_MESSAGE);
+		}
+    }
     /**
      * @param args the command line arguments
      */
@@ -187,9 +237,9 @@ public class EventosFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnModificar;
     private javax.swing.JComboBox cboxFiltro;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblEventos;
