@@ -5,7 +5,7 @@
  */
 package testtabla;
 
-import testtabla.EventosDialogs.AgregarEventoDialog;
+import testtabla.BebidasDialogs.AgregarBebidaDialog;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -117,7 +117,15 @@ public class EventosFrame extends javax.swing.JFrame {
             new String [] {
                 "Id", "Nombre", "Disponible"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblEventos);
 
         btnModificar.setText("Modificar");
@@ -193,7 +201,7 @@ public class EventosFrame extends javax.swing.JFrame {
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
-        AgregarEventoDialog dialog = new AgregarEventoDialog(this, true);
+        AgregarBebidaDialog dialog = new AgregarBebidaDialog(this, true);
         dialog.setVisible(true);
         dialog.dispose();
         cargarEventos();

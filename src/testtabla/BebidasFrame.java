@@ -6,8 +6,8 @@
 package testtabla;
 
 import javax.swing.JOptionPane;
-import testtabla.EventosDialogs.AgregarEventoDialog;
-import testtabla.EventosDialogs.ModificarEventoDialog;
+import testtabla.BebidasDialogs.AgregarBebidaDialog;
+import testtabla.BebidasDialogs.ModificarBebidaDialog;
 import testtabla.Models.EventoModel;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,12 +15,46 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
+import testtabla.Models.BebidaModel;
 
 /**
  *
  * @author Ghost
  */
 public class BebidasFrame extends javax.swing.JFrame {
+    
+    int stoiDenominacion(String denominacion){
+        switch(denominacion){
+            case "Mililitros":
+                return 0;
+            case "Medio litros":
+                return 1;
+            case "Litros":
+                return 2;
+            case "Dos litros":
+                return 3;
+            case "Tres litros":
+                return 4;
+            default:
+                return -1;
+        }
+    }
+    
+    String itosDenominacion(int code){
+        switch(code){
+            case 0:
+                return "Mililitros";
+            case 1:
+                return "Medio litros";
+            case 2:
+                return "Litros";
+            case 3:
+                return "Dos litros";
+            case 4:
+                return "Tres litros";
+        }
+        return "Error";
+    }
 
     /**
      * Creates new form BebidasFrame
@@ -28,11 +62,12 @@ public class BebidasFrame extends javax.swing.JFrame {
     Connection conn = ConexionBD.getInstance().getConnection();
     public BebidasFrame() {
         initComponents();
+        cargarBebidas();
     }
-    public void cargarEventos(){
+    public void cargarBebidas(){
         
         try {
-            String query = "SELECT * FROM eventos";
+            String query = "SELECT * FROM bebidas";
 
 			PreparedStatement execQuery = conn.prepareStatement(query);
 			
@@ -46,8 +81,10 @@ public class BebidasFrame extends javax.swing.JFrame {
 
 			while(resultQuery.next()){
 				//Obtener precio total
-				int id = resultQuery.getInt("id_evento");
+				int id = resultQuery.getInt("id_bebida");
                                 String nombre = resultQuery.getString("nombre");
+                                int denominacion = resultQuery.getInt("denominacion");
+                                String strdenominacion = itosDenominacion(denominacion);
                                 
                                 boolean disponible = resultQuery.getBoolean("registro_disponible");
                                 
@@ -56,6 +93,7 @@ public class BebidasFrame extends javax.swing.JFrame {
 				Object resultado[] = {
 					id,
                                         nombre,
+                                        strdenominacion,
                                         disponible
 				};
 
@@ -70,7 +108,7 @@ public class BebidasFrame extends javax.swing.JFrame {
 		
 		//Modificar el producto
 		try {
-			String query = "DELETE FROM eventos WHERE id_evento = ?";
+			String query = "DELETE FROM bebidas WHERE id_bebidas = ?";
 
 			PreparedStatement execQuery = conn.prepareStatement(query);
 			execQuery.setInt(1, id);
@@ -78,7 +116,7 @@ public class BebidasFrame extends javax.swing.JFrame {
 			execQuery.executeUpdate();
 
 			//Mostrar mensaje
-			JOptionPane.showMessageDialog(null, "Evento eliminado.");
+			JOptionPane.showMessageDialog(null, "Bebida eliminada.");
 		} catch (SQLException errorMod) {
 			JOptionPane.showMessageDialog(null, "Error al eliminar. \n" + errorMod, "Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -94,13 +132,13 @@ public class BebidasFrame extends javax.swing.JFrame {
 
         jComboBox1 = new javax.swing.JComboBox();
         botonActualizar = new javax.swing.JButton();
-        botonAgregar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBebidas = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnAgregar = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnRegresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Bebidas");
@@ -108,42 +146,67 @@ public class BebidasFrame extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         botonActualizar.setText("Actualizar");
-
-        botonAgregar.setText("Agregar Nuevo");
+        botonActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonActualizarActionPerformed(evt);
+            }
+        });
 
         tblBebidas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Id", "Nombre", "Disponible", "Modificar", "Eliminar"
+                "Id", "Nombre", "Denominacion", "Disponible"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblBebidas);
 
         jLabel2.setText("Filtro:");
 
-        jButton1.setText("Agregar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnAgregarActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Modificar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnModificarActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Eliminar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        btnRegresar.setText("Regresar");
+        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarActionPerformed(evt);
             }
         });
 
@@ -152,27 +215,27 @@ public class BebidasFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonActualizar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(botonAgregar)
-                .addGap(17, 17, 17))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnRegresar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(botonActualizar)
+                        .addGap(19, 19, 19))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62)
+                        .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 281, Short.MAX_VALUE)
+                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,52 +244,53 @@ public class BebidasFrame extends javax.swing.JFrame {
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(botonActualizar)
-                    .addComponent(botonAgregar))
+                    .addComponent(btnRegresar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnModificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
-        AgregarEventoDialog dialog = new AgregarEventoDialog(this, true);
+        AgregarBebidaDialog dialog = new AgregarBebidaDialog(this, true);
         dialog.setVisible(true);
         dialog.dispose();
-        cargarEventos();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        cargarBebidas();
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         // TODO add your handling code here:
         int row = tblBebidas.getSelectedRow();
         
         int id = Integer.parseInt(tblBebidas.getValueAt(row, 0).toString());
         String nombre = tblBebidas.getValueAt(row, 1).toString();
-        Boolean disponible = Boolean.parseBoolean(tblBebidas.getValueAt(row, 2).toString());
+        int denominacion = stoiDenominacion(tblBebidas.getValueAt(row, 2).toString());
+        Boolean disponible = Boolean.parseBoolean(tblBebidas.getValueAt(row, 3).toString());
         
-        EventoModel evento = new EventoModel(id, nombre, disponible);
+        BebidaModel bebida = new BebidaModel(id, nombre, denominacion, disponible);
         
-        ModificarEventoDialog dialog = new ModificarEventoDialog(this, true, evento);
+        ModificarBebidaDialog dialog = new ModificarBebidaDialog(this, true, bebida);
         
         dialog.setVisible(true);
         
         if(dialog.getCambio()){
-            cargarEventos();
+            cargarBebidas();
         }
         
         dialog.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnModificarActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // TODO add your handling code here:
         int row = tblBebidas.getSelectedRow();
         int col = 1;
@@ -238,21 +302,26 @@ public class BebidasFrame extends javax.swing.JFrame {
             JOptionPane.QUESTION_MESSAGE,
             JOptionPane.YES_NO_OPTION);
         
-        int opcion = JOptionPane.showConfirmDialog(null, "¿Desea elminar el evento " + nombre + "?", "Aviso", JOptionPane.YES_NO_OPTION);
-        
-        //opcion.setVisible(true);
-        
-        //String valueStr = opcion.getValue().toString();
-        //int value = Integer.parseInt(valueStr);
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Desea elminar la bebida " + nombre + "?", "Aviso", JOptionPane.YES_NO_OPTION);
         
         if(opcion == JOptionPane.YES_OPTION){
             Object id_object = tblBebidas.getValueAt(row, 0);
             int id = Integer.parseInt(id_object.toString());
             
             eliminarBebida(id);
-            cargarEventos();
+            cargarBebidas();
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void botonActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonActualizarActionPerformed
+        // TODO add your handling code here:
+        cargarBebidas();
+    }//GEN-LAST:event_botonActualizarActionPerformed
+
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_btnRegresarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -260,10 +329,10 @@ public class BebidasFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonActualizar;
-    private javax.swing.JButton botonAgregar;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnRegresar;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
