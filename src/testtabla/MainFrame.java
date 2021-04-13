@@ -111,7 +111,6 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         botonGenerar = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -121,7 +120,6 @@ public class MainFrame extends javax.swing.JFrame {
         menuBebidas = new javax.swing.JMenu();
         menuHistorial = new javax.swing.JMenu();
         menuOpciones = new javax.swing.JMenu();
-        menuAyuda = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ventana Principal");
@@ -174,8 +172,6 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("Agregar");
-
         jButton3.setText("Agregar");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -202,7 +198,7 @@ public class MainFrame extends javax.swing.JFrame {
                 java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -214,6 +210,10 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         jScrollPane2.setViewportView(tblBebidas);
+        if (tblBebidas.getColumnModel().getColumnCount() > 0) {
+            tblBebidas.getColumnModel().getColumn(0).setMinWidth(10);
+            tblBebidas.getColumnModel().getColumn(0).setMaxWidth(25);
+        }
 
         menuEventos.setText("Eventos");
         menuEventos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -247,9 +247,6 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jMenuBar1.add(menuOpciones);
 
-        menuAyuda.setText("Ayuda");
-        jMenuBar1.add(menuAyuda);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -270,9 +267,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(labelNombreEvento)
-                        .addGap(246, 246, 246)
-                        .addComponent(jLabel4))
+                        .addComponent(labelNombreEvento))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(17, 17, 17)
                         .addComponent(jLabel3)
@@ -296,8 +291,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jLabel1)
-                    .addComponent(labelNombreEvento)
-                    .addComponent(jLabel4))
+                    .addComponent(labelNombreEvento))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
@@ -451,13 +445,11 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelNombreEvento;
-    private javax.swing.JMenu menuAyuda;
     private javax.swing.JMenu menuBebidas;
     private javax.swing.JMenu menuEventos;
     private javax.swing.JMenu menuHistorial;

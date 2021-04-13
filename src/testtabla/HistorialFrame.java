@@ -21,7 +21,7 @@ public class HistorialFrame extends javax.swing.JFrame {
     
     Connection conn = ConexionBD.getInstance().getConnection();
     EventoModel evento = new EventoModel();
-    
+ 
     DefaultTableModel modTblBebidas;
     DefaultTableModel modTblConsumo;
 
@@ -80,7 +80,6 @@ public class HistorialFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnRegresar = new javax.swing.JButton();
         btnEvento = new javax.swing.JButton();
         lblEvento = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -95,14 +94,7 @@ public class HistorialFrame extends javax.swing.JFrame {
         tblConsumo = new javax.swing.JTable();
         btnGuardar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        btnRegresar.setText("Regresar");
-        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegresarActionPerformed(evt);
-            }
-        });
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         btnEvento.setText("Elegir evento");
         btnEvento.addActionListener(new java.awt.event.ActionListener() {
@@ -144,6 +136,9 @@ public class HistorialFrame extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(tblBebidas);
+        if (tblBebidas.getColumnModel().getColumnCount() > 0) {
+            tblBebidas.getColumnModel().getColumn(0).setMaxWidth(25);
+        }
 
         tblConsumo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -192,8 +187,7 @@ public class HistorialFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lblEvento))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnRegresar)
-                                .addGap(84, 84, 84)
+                                .addGap(161, 161, 161)
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtPersonas, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -225,7 +219,6 @@ public class HistorialFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRegresar)
                     .addComponent(txtPersonas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -234,28 +227,23 @@ public class HistorialFrame extends javax.swing.JFrame {
                     .addComponent(lblEvento))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cboxDenominacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAgregar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(1, 1, 1)
                 .addComponent(btnRemover)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-    }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void btnEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventoActionPerformed
         // TODO add your handling code here:
@@ -392,7 +380,6 @@ public class HistorialFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnEvento;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnRegresar;
     private javax.swing.JButton btnRemover;
     private javax.swing.JComboBox cboxDenominacion;
     private javax.swing.JLabel jLabel1;
