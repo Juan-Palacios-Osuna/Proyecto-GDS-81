@@ -6,7 +6,7 @@ import java.sql.*;
 public class ConexionBD {
 
     //Estas son constantes, declaralas como constantes...
-    private static final String SQL_DRIVER_URL = "jdbc:mysql://localhost:3306/predictor?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    private static final String SQL_DRIVER_URL = "jdbc:mysql://localhost/predictor?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private static final String DRIVER_CLASSNAME = "com.mysql.cj.jdbc.Driver";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";
