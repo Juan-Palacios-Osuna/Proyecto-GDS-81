@@ -23,7 +23,7 @@ import testtabla.Models.EventoModel;
 public class EventosFrame extends javax.swing.JFrame {
     
     Connection conn = ConexionBD.getInstance().getConnection();
-
+    
     /**
      * Creates new form EventosFrame
      */
@@ -197,6 +197,7 @@ public class EventosFrame extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
