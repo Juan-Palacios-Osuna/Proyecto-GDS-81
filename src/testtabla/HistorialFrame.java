@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import testtabla.Models.EventoModel;
 
@@ -257,6 +258,8 @@ public class HistorialFrame extends javax.swing.JFrame {
         
         String nombre = evento.getNombre();
         lblEvento.setText(nombre);
+        System.out.println("ID: ");
+        System.out.println(String.valueOf(evento.getId()));
         dialog.dispose();
     }//GEN-LAST:event_btnEventoActionPerformed
 
@@ -294,6 +297,38 @@ public class HistorialFrame extends javax.swing.JFrame {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
         
+        try{
+            int filas = modTblConsumo.getRowCount();
+            int personas = Integer.parseInt(txtPersonas.getText());
+
+            for(int i = 0; i < filas; i++){
+
+                int idBebida = Integer.parseInt(modTblConsumo.getValueAt(i, 0).toString());
+                //System.out.println(String.valueOf(idBebida));
+
+                int idEvento = this.evento.getId();
+                float cantidad = Float.parseFloat(modTblConsumo.getValueAt(i, 2).toString());
+                String denominacion = modTblConsumo.getValueAt(i, 3).toString();
+
+                float consumo = mlPorPersona(cantidad, personas, denominacion);
+
+                //Modificar el producto
+                
+                String query = "INSERT INTO `predictor`.`historial_consumo` (id_evento, id_bebida, mililitros) VALUES (?, ?, ?)";
+
+                PreparedStatement execQuery = conn.prepareStatement(query);
+                execQuery.setInt(1, idEvento);
+                execQuery.setInt(2, idBebida);
+                execQuery.setFloat(3, consumo);
+
+                execQuery.executeUpdate();
+            }
+            
+            JOptionPane.showMessageDialog(null, "Consumo registrado.");
+        } catch (SQLException errorMod) {
+                JOptionPane.showMessageDialog(null, "Error al agregar. \n" + errorMod, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
@@ -329,6 +364,25 @@ public class HistorialFrame extends javax.swing.JFrame {
                 new HistorialFrame().setVisible(true);
             }
         });
+    }
+    
+    public float mlPorPersona(float cantidad, int personas, String denominacion){
+        float ml = cantidad/personas;
+        
+        switch(denominacion){
+            case "Mililitros":
+                return ml;
+            case "Medio litros":
+                return (500*ml);
+            case "Litros":
+                return (1000*ml);
+            case "Dos litros":
+                return (2000*ml);
+            case "Tres litros":
+                return (3000*ml);
+            default:
+                return -1;
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

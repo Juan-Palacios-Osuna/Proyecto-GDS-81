@@ -194,8 +194,11 @@ public class InputEventoDialog extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         int row = tblEventos.getSelectedRow();
-        int col = 1;
+        //int col = 1;
+        
+        int id = Integer.parseInt(tblEventos.getValueAt(row,0).toString());
         String nom = tblEventos.getValueAt(row, 1).toString();
+        eventoModel.setId(id);
         eventoModel.setNombre(nom);
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
