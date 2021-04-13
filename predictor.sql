@@ -136,7 +136,7 @@ CREATE TABLE `historial_consumo` (
   KEY `id_bebida` (`id_bebida`),
   CONSTRAINT `historial_consumo_ibfk_1` FOREIGN KEY (`id_evento`) REFERENCES `eventos` (`id_evento`),
   CONSTRAINT `historial_consumo_ibfk_2` FOREIGN KEY (`id_bebida`) REFERENCES `bebidas` (`id_bebida`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `historial_consumo` */
 
@@ -150,7 +150,11 @@ insert  into `historial_consumo`(`id_consumo`,`id_evento`,`id_bebida`,`registro_
 (8,3,2,1,3000),
 (9,6,5,1,1),
 (10,6,6,1,2),
-(11,6,7,1,3);
+(11,6,7,1,3),
+(12,1,1,1,100),
+(13,1,2,1,200),
+(14,1,3,1,300),
+(15,1,5,1,400);
 
 /*Table structure for table `movimientos` */
 
