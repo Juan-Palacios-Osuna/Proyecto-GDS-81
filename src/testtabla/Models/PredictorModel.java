@@ -5,14 +5,6 @@
  */
 package testtabla.Models;
 
-enum enumDenominacion{
-    MILILITROS,
-    MEDIOLITROS,
-    LITROS,
-    DOSLITROS,
-    TRESLITROS
-}
-
 /**
  *
  * @author Ghost

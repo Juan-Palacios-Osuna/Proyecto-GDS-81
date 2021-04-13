@@ -154,10 +154,7 @@ public class BebidasFrame extends javax.swing.JFrame {
 
         tblBebidas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Id", "Nombre", "Denominacion", "Disponible"

@@ -182,6 +182,11 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuBar1.add(menuBebidas);
 
         menuHistorial.setText("Historial");
+        menuHistorial.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuHistorialMouseClicked(evt);
+            }
+        });
         jMenuBar1.add(menuHistorial);
 
         menuOpciones.setText("Opciones");
@@ -309,6 +314,11 @@ public class MainFrame extends javax.swing.JFrame {
     private void botonGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGenerarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_botonGenerarActionPerformed
+
+    private void menuHistorialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuHistorialMouseClicked
+        // TODO add your handling code here:
+        new HistorialFrame().setVisible(true);
+    }//GEN-LAST:event_menuHistorialMouseClicked
 
     /**
      * @param args the command line arguments
