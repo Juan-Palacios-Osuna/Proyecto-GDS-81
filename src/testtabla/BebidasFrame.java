@@ -75,7 +75,7 @@ public class BebidasFrame extends javax.swing.JFrame {
 			DefaultTableModel tablaTotal = (DefaultTableModel) tblBebidas.getModel();
 
 			//Hacer que la tabla se de cuenta de la ultima posición
-            //tablaTotal.setRowCount(tablaTotal.getRowCount());
+                        //tablaTotal.setRowCount(tablaTotal.getRowCount());
                         tablaTotal.setRowCount(0);
 
 			while(resultQuery.next()){
