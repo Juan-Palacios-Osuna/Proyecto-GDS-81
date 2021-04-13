@@ -9,6 +9,7 @@ import java.sql.*;
 import javax.swing.DefaultComboBoxModel;
 //import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import testtabla.Models.EventoModel;
 
 
@@ -20,7 +21,10 @@ public class MainFrame extends javax.swing.JFrame {
     Connection conn = ConexionBD.getInstance().getConnection();
     EventoModel evento = new EventoModel();
     
-    public void cargarComboBoxBarras(){
+    DefaultTableModel modTblBebidas;
+    DefaultTableModel modTblPrediccion;
+    
+    /*public void cargarComboBoxBarras(){
         try{
 			String qBuscarProductos = "SELECT * FROM barras";
 
@@ -40,28 +44,42 @@ public class MainFrame extends javax.swing.JFrame {
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null, e);
 		}
-    }
+    }*/
     
-    public void cargarComboBoxBebidas(){
-        try{
-			String qBuscarProductos = "SELECT * FROM bebidas";
+    public void cargarBebidas(){
+        
+        try {
+            String query = "SELECT * FROM bebidas";
 
-			PreparedStatement execQuery = conn.prepareStatement(qBuscarProductos);
-			ResultSet resQuery = execQuery.executeQuery();
+			PreparedStatement execQuery = conn.prepareStatement(query);
+			
+			ResultSet resultQuery = execQuery.executeQuery();
 
-			DefaultComboBoxModel listaBebidas = new DefaultComboBoxModel();
+			DefaultTableModel tablaTotal = (DefaultTableModel) tblBebidas.getModel();
 
-			while(resQuery.next()){
-				String producto = resQuery.getString("nombre");
+			//Hacer que la tabla se de cuenta de la ultima posición
+            //tablaTotal.setRowCount(tablaTotal.getRowCount());
+                        tablaTotal.setRowCount(0);
 
-				//Agregar elemento
-				listaBebidas.addElement(producto);
-			}
+			while(resultQuery.next()){
+				//Obtener precio total
+				int id = resultQuery.getInt("id_bebida");
+                                String nombre = resultQuery.getString("nombre");
+                                
+                                
 
-			cboxBebidas.setModel(listaBebidas);
-		}catch(Exception e){
-			JOptionPane.showMessageDialog(null, e);
-		}
+				//Campos a rellenar
+				Object resultado[] = {
+					id,
+                                        nombre
+				};
+
+				//Poner información en la tabla 
+				tablaTotal.addRow(resultado);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -69,8 +87,8 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
-        cargarComboBoxBarras();
-        cargarComboBoxBebidas();
+        //cargarComboBoxBarras();
+        cargarBebidas();
     }
 
     /**
@@ -83,7 +101,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblPrediccion = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         labelNombreEvento = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -91,12 +109,10 @@ public class MainFrame extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         botonGenerar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        cboxBarra = new javax.swing.JComboBox();
-        cboxBebidas = new javax.swing.JComboBox();
         jButton3 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblBebidas = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuEventos = new javax.swing.JMenu();
         menuBebidas = new javax.swing.JMenu();
@@ -108,26 +124,30 @@ public class MainFrame extends javax.swing.JFrame {
         setTitle("Ventana Principal");
         setResizable(false);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblPrediccion.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "Id", "Nombre", "Cantidad", "Medida", "Quitar"
+                "Id", "Nombre", "Cantidad", "Denominación"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                true, true, true, true, false
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Float.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblPrediccion);
 
         jLabel1.setText("Evento:");
 
@@ -153,17 +173,34 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Agregar");
 
-        cboxBarra.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        cboxBebidas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jButton3.setText("Agregar");
 
-        jLabel2.setText("Barra");
-
-        jLabel5.setText("Bebida");
-
         jButton2.setText("Limpiar");
+
+        tblBebidas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id", "Nombre"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tblBebidas);
 
         menuEventos.setText("Eventos");
         menuEventos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -206,47 +243,41 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(botonGenerar)
+                .addGap(274, 274, 274)
+                .addComponent(jButton2)
+                .addGap(17, 17, 17))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(labelNombreEvento))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(231, 231, 231)
-                                .addComponent(cboxBarra, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cboxBebidas, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(32, 32, 32)
-                                .addComponent(jButton3))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(23, 23, 23)
-                                .addComponent(jLabel3)
-                                .addGap(29, 29, 29)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(195, 195, 195)
-                                .addComponent(jLabel4))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(283, 283, 283)
-                                .addComponent(jLabel2)
-                                .addGap(128, 128, 128)
-                                .addComponent(jLabel5)))
-                        .addGap(0, 161, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(botonGenerar)
-                                .addGap(271, 271, 271)
-                                .addComponent(jButton2))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))))
-                .addGap(16, 16, 16))
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(labelNombreEvento)
+                        .addGap(246, 246, 246)
+                        .addComponent(jLabel4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 802, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(15, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -255,27 +286,23 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jLabel1)
-                    .addComponent(labelNombreEvento))
+                    .addComponent(labelNombreEvento)
+                    .addComponent(jLabel4))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel5))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cboxBarra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboxBebidas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jButton3)
+                .addGap(33, 33, 33)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(botonGenerar)
-                    .addComponent(jButton2)))
+                    .addComponent(jButton2))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         pack();
@@ -385,19 +412,15 @@ public class MainFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonGenerar;
-    private javax.swing.JComboBox cboxBarra;
-    private javax.swing.JComboBox cboxBebidas;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelNombreEvento;
     private javax.swing.JMenu menuAyuda;
@@ -405,5 +428,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenu menuEventos;
     private javax.swing.JMenu menuHistorial;
     private javax.swing.JMenu menuOpciones;
+    private javax.swing.JTable tblBebidas;
+    private javax.swing.JTable tblPrediccion;
     // End of variables declaration//GEN-END:variables
 }
